@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { contentRepository } from "@/lib/content";
 import { absoluteUrl } from "@/lib/site-config";
 
+export const dynamic = "force-static";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [programmes, events] = await Promise.all([
     contentRepository.getProgrammes(),
