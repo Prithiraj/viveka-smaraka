@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { searchRecords } from "@/content/search";
+import type { SearchRecord } from "@/types/content";
 
 function SearchIcon() {
   return (
@@ -13,7 +13,7 @@ function SearchIcon() {
   );
 }
 
-export function GlobalSearch() {
+export function GlobalSearch({ records }: { records: readonly SearchRecord[] }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,8 +42,8 @@ export function GlobalSearch() {
 
   const results = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase();
-    if (!normalized) return searchRecords.slice(0, 8);
-    return searchRecords
+    if (!normalized) return records.slice(0, 8);
+    return records
       .filter((record) =>
         [record.title, record.description, record.category, ...record.keywords]
           .join(" ")
@@ -51,7 +51,7 @@ export function GlobalSearch() {
           .includes(normalized),
       )
       .slice(0, 12);
-  }, [query]);
+  }, [query, records]);
 
   const close = () => {
     setOpen(false);
@@ -107,7 +107,7 @@ export function GlobalSearch() {
             </div>
             <div className="search-palette__foot">
               <span>{results.length} result{results.length === 1 ? "" : "s"}</span>
-              <span>English index · Kannada keywords supported</span>
+              <span>Provider-backed index · Kannada keywords supported</span>
             </div>
           </div>
         </div>

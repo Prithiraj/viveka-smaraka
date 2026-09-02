@@ -3,24 +3,41 @@ import type { ReactNode } from "react";
 import "./globals.css";
 import "./phase2.css";
 import "./phase3.css";
+import "./phase4.css";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { contentRepository } from "@/lib/content";
+import { organizationJsonLd } from "@/lib/seo/schema";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: "Viveka Smaraka — Mysuru",
     template: "%s · Viveka Smaraka",
   },
-  description:
-    "A living cultural youth centre in Mysuru connecting the historic legacy of Swami Vivekananda with contemporary learning, character, culture, and service.",
+  description: siteConfig.description,
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    title: "Viveka Smaraka — Mysuru",
+    description: siteConfig.description,
+  },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+  const [searchRecords, visitorContact] = await Promise.all([
+    contentRepository.getSearchRecords(),
+    contentRepository.getVisitorContact(),
+  ]);
+
   return (
     <html lang="en">
       <body>
+        <JsonLd id="viveka-smaraka-organization" data={organizationJsonLd(visitorContact)} />
         <a className="skip-link" href="#main-content">Skip to content</a>
-        <SiteHeader />
+        <SiteHeader searchRecords={searchRecords} />
         {children}
         <SiteFooter />
       </body>

@@ -81,6 +81,16 @@ export interface VisitorFact {
   href?: string;
 }
 
+export interface VisitorContact {
+  label: string;
+  address: string;
+  phonePrimary: string;
+  phoneSecondary: string;
+  mobile: string;
+  email: string;
+  note: string;
+}
+
 export interface SearchRecord {
   title: string;
   description: string;

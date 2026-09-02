@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { primaryNav } from "@/content/site";
+import type { SearchRecord } from "@/types/content";
 import { GlobalSearch } from "./GlobalSearch";
 import { LanguageControl } from "./LanguageControl";
 
-export function SiteHeader() {
+export function SiteHeader({ searchRecords }: { searchRecords: readonly SearchRecord[] }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export function SiteHeader() {
       </nav>
 
       <div className="header-actions">
-        <GlobalSearch />
+        <GlobalSearch records={searchRecords} />
         <LanguageControl />
         <Link className="button button--small button--warm desktop-support" href="/support">
           Support
