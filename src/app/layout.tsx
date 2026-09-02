@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import "./phase2.css";
@@ -13,6 +13,13 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { contentRepository } from "@/lib/content";
 import { organizationJsonLd } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site-config";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
