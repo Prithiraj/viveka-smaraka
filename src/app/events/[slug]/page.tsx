@@ -1,0 +1,111 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { InterestPanel } from "@/components/forms/InterestPanel";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { ArchiveMedia } from "@/components/ui/ArchiveMedia";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
+import { SectionLabel } from "@/components/ui/SectionLabel";
+import { contentRepository } from "@/lib/content";
+import { eventJsonLd } from "@/lib/seo/schema";
+
+export async function generateStaticParams() {
+  const events = await contentRepository.getEvents();
+  return events.map((event) => ({ slug: event.slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const event = await contentRepository.getEventBySlug(slug);
+  if (!event) return { title: "Event" };
+  return {
+    title: event.title,
+    description: event.summary,
+    alternates: { canonical: `/events/${event.slug}` },
+  };
+}
+
+export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const event = await contentRepository.getEventBySlug(slug);
+  if (!event) notFound();
+
+  return (
+    <main id="main-content" className="event-detail">
+      <JsonLd id={`event-${event.slug}`} data={eventJsonLd(event)} />
+      <section className="event-detail__hero shell">
+        <div className="event-detail__title">
+          <SectionLabel>{event.eyebrow}</SectionLabel>
+          <p>{event.displayDate} · {event.location}</p>
+          <h1>{event.title}</h1>
+          <div className="event-detail__tags">
+            {event.tags.map((tag) => <span key={tag}>{tag}</span>)}
+          </div>
+        </div>
+        {event.media?.length ? <ArchiveMedia media={event.media} className="event-detail__media" /> : null}
+      </section>
+
+      <section className="event-detail__story shell">
+        <aside>
+          <span>Status</span>
+          <strong>{event.status === "completed" ? "Archive" : event.status}</strong>
+          <span>Venue</span>
+          <strong>{event.venue}</strong>
+        </aside>
+        <div>
+          {event.description.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </div>
+      </section>
+
+      {event.programme.length ? (
+        <section className="event-programme shell" aria-labelledby="event-programme-title">
+          <div className="event-programme__heading">
+            <SectionLabel>{event.status === "completed" ? "Programme record" : "Programme"}</SectionLabel>
+            <h2 id="event-programme-title">
+              {event.status === "completed" ? "The programme, preserved as a record." : "What is planned."}
+            </h2>
+          </div>
+          <div className="event-programme__list">
+            {event.programme.map((session, index) => (
+              <article key={`${session.day}-${session.time}-${session.title}`}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <small>{session.day}</small>
+                  <strong>{session.time}</strong>
+                </div>
+                <div>
+                  <h3>{session.title}</h3>
+                  <p>{session.venue}</p>
+                  {session.detail && <small>{session.detail}</small>}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {event.status !== "completed" ? (
+        <InterestPanel
+          kind="event"
+          contextSlug={event.slug}
+          contextTitle={event.title}
+          eyebrow="Event interest"
+          title="Ask about attending this event."
+        />
+      ) : null}
+
+      <section className="event-detail__source">
+        <div className="shell">
+          <span>Source record</span>
+          <p>This event entry is based on the institutional source linked below when a public source is available.</p>
+          {event.sourceUrl ? (
+            <a href={event.sourceUrl} target="_blank" rel="noreferrer">
+              {event.sourceLabel ?? "View source"} <ArrowIcon />
+            </a>
+          ) : null}
+          <Link href="/events">Return to events</Link>
+        </div>
+      </section>
+    </main>
+  );
+}

@@ -1,0 +1,87 @@
+/* Phase 6 — portrait hierarchy corrections
+   Keep Swami Vivekananda's face and historical presence legible whenever the
+   archival standing portrait is used in a cropped photographic composition. */
+
+/* Hero: align the historical portrait with the human eye-line of the opening
+   photograph instead of leaving it as a low decorative inset. */
+.photo-hero__portrait {
+  left: -18px;
+  top: clamp(138px, 15vw, 178px);
+  bottom: auto;
+  width: clamp(178px, 14vw, 205px);
+  aspect-ratio: .62;
+  border-width: 9px;
+  background: #e7dcc9;
+  box-shadow: 0 24px 65px rgba(45, 38, 28, .18);
+}
+
+.photo-hero__portrait img {
+  object-fit: cover;
+  object-position: center top;
+  filter: sepia(.08) saturate(.9) contrast(.98);
+}
+
+.photo-hero__portrait figcaption {
+  left: 9px;
+  right: auto;
+  bottom: 9px;
+  max-width: calc(100% - 18px);
+  padding: 6px 8px;
+  white-space: nowrap;
+  letter-spacing: .07em;
+  background: rgba(255, 253, 248, .94);
+  box-shadow: 0 4px 16px rgba(40, 33, 24, .08);
+}
+
+.photo-hero__portrait figcaption::before {
+  content: "Swami Vivekananda · ";
+}
+
+/* Remember card: the archival portrait must always preserve the head and face.
+   A top-aligned crop still fills the editorial card while showing more of the
+   historically important upper-body portrait. */
+.story-photo-card:first-child .story-photo-card__image {
+  background: #e7dcc9;
+}
+
+.story-photo-card:first-child .story-photo-card__image img {
+  object-position: center top;
+  filter: sepia(.04) saturate(.94) contrast(.99);
+}
+
+/* The dedicated heritage portrait also favours the face before lower-body crop. */
+.heritage-editorial__image img {
+  object-position: center top;
+}
+
+@media (max-width: 1050px) {
+  .photo-hero__portrait {
+    left: -10px;
+    top: 126px;
+    width: 166px;
+  }
+}
+
+@media (max-width: 760px) {
+  .photo-hero__portrait {
+    left: -3px;
+    top: 78px;
+    bottom: auto;
+    width: 128px;
+    aspect-ratio: .62;
+    border-width: 6px;
+  }
+
+  .photo-hero__portrait figcaption {
+    left: 6px;
+    bottom: 6px;
+    max-width: calc(100% - 12px);
+    padding: 5px 6px;
+    font-size: 7px;
+    letter-spacing: .04em;
+  }
+
+  .story-photo-card:first-child .story-photo-card__image {
+    height: 360px;
+  }
+}
