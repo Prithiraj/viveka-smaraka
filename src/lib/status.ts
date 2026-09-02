@@ -4,5 +4,6 @@ export const statusLabel: Record<ProgrammeStatus, string> = {
   "registration-open": "Registration open",
   upcoming: "Upcoming",
   ongoing: "Ongoing",
+  completed: "Completed",
   "details-soon": "Schedule to be announced",
 };
