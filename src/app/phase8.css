@@ -1,0 +1,51 @@
+/* Phase 8 — defensive touch-device fallback
+   Some mobile browsers can be configured to request a desktop-style layout
+   viewport. The canonical fix remains the explicit device viewport in layout.tsx,
+   but this layer keeps the editorial composition usable on coarse-pointer devices
+   even when the browser reports an unusually wide CSS viewport. */
+
+@media (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+  .photo-hero { min-height: auto; padding-top: 122px; }
+  .photo-hero__grid { grid-template-columns: 1fr; gap: 42px; }
+  .photo-hero__copy { max-width: 760px; padding-top: 0; }
+  .photo-hero__visual { width: 100%; min-height: clamp(520px, 72vw, 680px); }
+  .photo-hero__main-image { inset: 0; }
+  .photo-hero__portrait { top: 72px; left: -8px; width: clamp(160px, 22vw, 205px); }
+
+  .editorial-intro__grid,
+  .story-triptych__heading,
+  .heritage-editorial,
+  .archive-editorial__card,
+  .section-heading,
+  .event-card,
+  .event-detail__hero,
+  .visit-hero__grid,
+  .visit-contact,
+  .interest-panel__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .story-triptych__grid { grid-template-columns: 1fr; }
+  .story-photo-card:last-child { grid-column: auto; display: block; }
+  .story-photo-card:last-child .story-photo-card__image { height: 360px; min-height: 0; }
+
+  .heritage-editorial__image {
+    width: min(100%, 680px);
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+  }
+
+  .archive-editorial__card { min-height: 0; }
+  .archive-editorial__media { min-height: 0; aspect-ratio: 4 / 3; }
+  .archive-editorial__body { min-height: 0; }
+
+  .event-card__content { border-left: 0; border-top: 1px solid rgba(41,39,32,.12); }
+  .event-detail__hero { gap: 46px; }
+  .visit-spaces__grid { grid-template-columns: 1fr; }
+
+  .programme-grid { grid-template-columns: 1fr; }
+
+  .photo-hero__actions { display: grid; grid-template-columns: 1fr; width: 100%; }
+  .photo-hero__actions .button,
+  .support-preview--light .button { width: 100%; }
+}
