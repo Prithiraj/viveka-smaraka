@@ -1,29 +1,38 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { InterestPanel } from "@/components/forms/InterestPanel";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ArchiveMedia } from "@/components/ui/ArchiveMedia";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { events } from "@/content/events";
+import { contentRepository } from "@/lib/content";
+import { eventJsonLd } from "@/lib/seo/schema";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const events = await contentRepository.getEvents();
   return events.map((event) => ({ slug: event.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const event = events.find((item) => item.slug === slug);
+  const event = await contentRepository.getEventBySlug(slug);
   if (!event) return { title: "Event" };
-  return { title: event.title, description: event.summary };
+  return {
+    title: event.title,
+    description: event.summary,
+    alternates: { canonical: `/events/${event.slug}` },
+  };
 }
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const event = events.find((item) => item.slug === slug);
+  const event = await contentRepository.getEventBySlug(slug);
   if (!event) notFound();
 
   return (
     <main id="main-content" className="event-detail">
+      <JsonLd id={`event-${event.slug}`} data={eventJsonLd(event)} />
       <section className="event-detail__hero shell">
         <div className="event-detail__title">
           <SectionLabel>{event.eyebrow}</SectionLabel>
@@ -70,6 +79,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           ))}
         </div>
       </section>
+
+      {event.status !== "completed" ? (
+        <InterestPanel
+          kind="event"
+          contextSlug={event.slug}
+          contextTitle={event.title}
+          eyebrow="Event interest"
+          title="Ask about attending this event."
+        />
+      ) : null}
 
       <section className="event-detail__source">
         <div className="shell">

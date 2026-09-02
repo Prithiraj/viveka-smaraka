@@ -1,29 +1,38 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { InterestPanel } from "@/components/forms/InterestPanel";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { programmes } from "@/content/site";
+import { contentRepository } from "@/lib/content";
+import { programmeJsonLd } from "@/lib/seo/schema";
 import { statusLabel } from "@/lib/status";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const programmes = await contentRepository.getProgrammes();
   return programmes.map((programme) => ({ slug: programme.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const programme = programmes.find((item) => item.slug === slug);
+  const programme = await contentRepository.getProgrammeBySlug(slug);
   if (!programme) return { title: "Programme" };
-  return { title: programme.title, description: programme.summary };
+  return {
+    title: programme.title,
+    description: programme.summary,
+    alternates: { canonical: `/programs/${programme.slug}` },
+  };
 }
 
 export default async function ProgrammeDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const programme = programmes.find((item) => item.slug === slug);
+  const programme = await contentRepository.getProgrammeBySlug(slug);
   if (!programme) notFound();
 
   return (
     <main id="main-content" className="programme-detail">
+      <JsonLd id={`course-${programme.slug}`} data={programmeJsonLd(programme)} />
       <section className="programme-detail__hero shell">
         <div>
           <SectionLabel>Programme pathway</SectionLabel>
@@ -80,6 +89,14 @@ export default async function ProgrammeDetailPage({ params }: { params: Promise<
           </section>
         </div>
       </section>
+
+      <InterestPanel
+        kind="programme"
+        contextSlug={programme.slug}
+        contextTitle={programme.title}
+        eyebrow="Programme interest"
+        title="Be ready when the verified batch details arrive."
+      />
 
       <section className="programme-detail__next">
         <div className="shell">

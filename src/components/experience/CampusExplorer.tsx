@@ -3,7 +3,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import type { Group } from "three";
-import { facilities } from "@/content/site";
+import type { Facility } from "@/types/content";
 
 const BLOCKS: Array<{
   position: [number, number, number];
@@ -32,7 +32,7 @@ function useReducedMotion() {
   return reduced;
 }
 
-function CampusModel({ selected }: { selected: number }) {
+function CampusModel({ selected, count }: { selected: number; count: number }) {
   const group = useRef<Group>(null);
 
   useFrame((state, delta) => {
@@ -44,7 +44,7 @@ function CampusModel({ selected }: { selected: number }) {
 
   return (
     <group ref={group} rotation={[-0.08, -0.18, 0]} position={[0, -0.55, 0]}>
-      {BLOCKS.map((block, index) => {
+      {BLOCKS.slice(0, count).map((block, index) => {
         const active = selected === index;
         return (
           <mesh
@@ -74,30 +74,37 @@ function CampusModel({ selected }: { selected: number }) {
   );
 }
 
-function StaticCampus({ selected }: { selected: number }) {
+function StaticCampus({ selected, count }: { selected: number; count: number }) {
   return (
     <div className="campus-static" aria-hidden="true">
-      {BLOCKS.map((_, index) => (
+      {BLOCKS.slice(0, count).map((_, index) => (
         <span className={selected === index ? "is-active" : ""} key={index} />
       ))}
     </div>
   );
 }
 
-export function CampusExplorer() {
+export function CampusExplorer({ facilities }: { facilities: readonly Facility[] }) {
   const [selected, setSelected] = useState(0);
   const reducedMotion = useReducedMotion();
-  const facility = facilities[selected];
+  const spatialFacilities = facilities.slice(0, BLOCKS.length);
+
+  if (!spatialFacilities.length) {
+    return <div className="campus-explorer campus-explorer--empty">Spatial records are awaiting publication.</div>;
+  }
+
+  const activeIndex = Math.min(selected, spatialFacilities.length - 1);
+  const facility = spatialFacilities[activeIndex];
 
   return (
     <div className="campus-explorer">
       <div className="campus-explorer__visual">
         <div className="campus-explorer__coordinates" aria-hidden="true">
-          <span>Mysuru · Karnataka</span>
-          <span>Conceptual spatial study</span>
+          <span>Conceptual plan</span>
+          <span>Not to scale</span>
         </div>
         {reducedMotion ? (
-          <StaticCampus selected={selected} />
+          <StaticCampus selected={activeIndex} count={spatialFacilities.length} />
         ) : (
           <Canvas
             aria-hidden="true"
@@ -108,7 +115,7 @@ export function CampusExplorer() {
             <ambientLight intensity={0.65} />
             <directionalLight position={[4, 8, 5]} intensity={2.2} color="#f2dfbd" castShadow />
             <pointLight position={[-4, 2, -2]} intensity={18} color="#b7762f" distance={9} />
-            <CampusModel selected={selected} />
+            <CampusModel selected={activeIndex} count={spatialFacilities.length} />
           </Canvas>
         )}
         <div className="campus-explorer__caption">
@@ -124,12 +131,12 @@ export function CampusExplorer() {
           <p>{facility.description}</p>
         </div>
         <div className="campus-explorer__controls" aria-label="Explore Viveka Smaraka spaces">
-          {facilities.map((item, index) => (
+          {spatialFacilities.map((item, index) => (
             <button
               type="button"
               key={item.slug}
-              className={selected === index ? "is-active" : ""}
-              aria-pressed={selected === index}
+              className={activeIndex === index ? "is-active" : ""}
+              aria-pressed={activeIndex === index}
               onClick={() => setSelected(index)}
             >
               <span>{item.index}</span>

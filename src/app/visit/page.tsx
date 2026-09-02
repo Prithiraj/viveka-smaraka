@@ -1,18 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { facilities } from "@/content/site";
-import { visitorContact, visitorFacts } from "@/content/visitor";
+import { contentRepository } from "@/lib/content";
+import { placeJsonLd } from "@/lib/seo/schema";
 
 export const metadata: Metadata = {
   title: "Visit",
   description: "Plan a visit to Viveka Smaraka in Mysuru with verified location, facility, and contact information.",
 };
 
-export default function VisitPage() {
+export default async function VisitPage() {
+  const [facilities, visitorFacts, visitorContact] = await Promise.all([
+    contentRepository.getFacilities(),
+    contentRepository.getVisitorFacts(),
+    contentRepository.getVisitorContact(),
+  ]);
+
   return (
     <main id="main-content" className="visit-page">
+      <JsonLd id="viveka-smaraka-place" data={placeJsonLd()} />
       <section className="visit-hero shell">
         <SectionLabel>Visit Viveka Smaraka</SectionLabel>
         <div className="visit-hero__grid">

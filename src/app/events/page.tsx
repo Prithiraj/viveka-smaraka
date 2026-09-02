@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { EventCard } from "@/components/ui/EventCard";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { events } from "@/content/events";
+import { contentRepository } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Events",
   description: "Upcoming programmes and the growing public archive of Viveka Smaraka events in Mysuru.",
 };
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const events = await contentRepository.getEvents();
   const upcoming = events.filter((event) => event.status === "upcoming" || event.status === "ongoing");
   const archive = events.filter((event) => event.status === "completed");
 
@@ -17,7 +18,7 @@ export default function EventsPage() {
       <section className="listing-hero shell">
         <SectionLabel>Events</SectionLabel>
         <h1>A stage for ideas,<br /><em>culture, and youth.</em></h1>
-        <p>The event system now distinguishes verified live programming from the institutional archive. Nothing is promoted as upcoming until a date is confirmed by the centre.</p>
+        <p>The event system distinguishes verified live programming from the institutional archive. Nothing is promoted as upcoming until a date is confirmed by the centre.</p>
       </section>
 
       <section className="event-status shell" aria-labelledby="upcoming-events-title">
@@ -36,7 +37,7 @@ export default function EventsPage() {
           <div className="event-empty">
             <span>Calendar status</span>
             <strong>No future event has been published into this application yet.</strong>
-            <p>When the institutional calendar is connected, confirmed talks, workshops, cultural programmes, and gatherings will appear here automatically.</p>
+            <p>When the institutional calendar is connected, confirmed talks, workshops, cultural programmes, and gatherings will appear here automatically through the content provider.</p>
           </div>
         )}
       </section>

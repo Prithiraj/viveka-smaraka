@@ -5,12 +5,17 @@ import { CampusExplorer } from "@/components/experience/CampusExplorer";
 import { ProgrammeCard } from "@/components/ui/ProgrammeCard";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
-import { events } from "@/content/events";
-import { heritagePreviewMoments, programmes } from "@/content/site";
+import { contentRepository } from "@/lib/content";
 
-export default function Home() {
-  const archiveEvent = events[0];
-  const archiveImage = archiveEvent.media?.[0];
+export default async function Home() {
+  const [programmes, facilities, heritagePreviewMoments, events] = await Promise.all([
+    contentRepository.getProgrammes(),
+    contentRepository.getFacilities(),
+    contentRepository.getHeritagePreviewMoments(),
+    contentRepository.getEvents(),
+  ]);
+  const archiveEvent = events.find((event) => event.status === "completed") ?? events[0];
+  const archiveImage = archiveEvent?.media?.[0];
 
   return (
     <main id="main-content">
@@ -92,7 +97,7 @@ export default function Home() {
             </div>
             <p>Select a space to explore its role in the institution. The model is intentionally abstract until verified architectural geometry is available.</p>
           </div>
-          <CampusExplorer />
+          <CampusExplorer facilities={facilities} />
         </div>
       </section>
 
@@ -135,23 +140,25 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="events-preview shell">
-        <SectionLabel>From the archive</SectionLabel>
-        <div className="home-archive-event">
-          {archiveImage ? (
-            <div className="home-archive-event__media">
-              <Image src={archiveImage.src} alt={archiveImage.alt} fill sizes="(max-width: 900px) 100vw, 52vw" />
-              <span aria-hidden="true" />
+      {archiveEvent ? (
+        <section className="events-preview shell">
+          <SectionLabel>From the archive</SectionLabel>
+          <div className="home-archive-event">
+            {archiveImage ? (
+              <div className="home-archive-event__media">
+                <Image src={archiveImage.src} alt={archiveImage.alt} fill sizes="(max-width: 900px) 100vw, 52vw" />
+                <span aria-hidden="true" />
+              </div>
+            ) : null}
+            <div className="home-archive-event__copy">
+              <span>{archiveEvent.displayDate}</span>
+              <h2>{archiveEvent.title}</h2>
+              <p>{archiveEvent.summary}</p>
+              <Link href={`/events/${archiveEvent.slug}`}>Enter the opening archive <ArrowIcon /></Link>
             </div>
-          ) : null}
-          <div className="home-archive-event__copy">
-            <span>{archiveEvent.displayDate}</span>
-            <h2>{archiveEvent.title}</h2>
-            <p>{archiveEvent.summary}</p>
-            <Link href={`/events/${archiveEvent.slug}`}>Enter the opening archive <ArrowIcon /></Link>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section className="support-preview">
         <div className="support-preview__orb" aria-hidden="true" />

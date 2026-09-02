@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { ArchiveMedia } from "@/components/ui/ArchiveMedia";
-import { heritageMoments } from "@/content/site";
+import type { HeritageMoment } from "@/types/content";
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -19,12 +19,14 @@ function useReducedMotion() {
   return reduced;
 }
 
-export function HeritageJourney() {
+export function HeritageJourney({ moments }: { moments: readonly HeritageMoment[] }) {
   const [active, setActive] = useState(0);
   const items = useRef<Array<HTMLElement | null>>([]);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
+    if (!moments.length) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -39,9 +41,13 @@ export function HeritageJourney() {
 
     items.current.forEach((item) => item && observer.observe(item));
     return () => observer.disconnect();
-  }, []);
+  }, [moments]);
 
-  const progress = heritageMoments.length <= 1 ? 0 : (active / (heritageMoments.length - 1)) * 100;
+  if (!moments.length) return null;
+
+  const activeIndex = Math.min(active, moments.length - 1);
+  const activeMoment = moments[activeIndex];
+  const progress = moments.length <= 1 ? 0 : (activeIndex / (moments.length - 1)) * 100;
 
   const jumpTo = (index: number) => {
     items.current[index]?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
@@ -56,15 +62,15 @@ export function HeritageJourney() {
         <aside className="heritage-journey__rail" aria-label="Journey chapters">
           <div className="heritage-journey__rail-head">
             <span>Journey</span>
-            <strong>{heritageMoments[active].year}</strong>
+            <strong>{activeMoment.year}</strong>
           </div>
           <div className="heritage-journey__track" aria-hidden="true"><span /></div>
           <div className="heritage-journey__steps">
-            {heritageMoments.map((moment, index) => (
+            {moments.map((moment, index) => (
               <button
                 type="button"
                 key={`${moment.year}-${moment.chapter}`}
-                className={index === active ? "is-active" : ""}
+                className={index === activeIndex ? "is-active" : ""}
                 onClick={() => jumpTo(index)}
                 aria-label={`Jump to ${moment.year}: ${moment.title}`}
               >
@@ -76,9 +82,9 @@ export function HeritageJourney() {
         </aside>
 
         <div className="heritage-journey__chapters">
-          {heritageMoments.map((moment, index) => (
+          {moments.map((moment, index) => (
             <article
-              className={index === active ? "heritage-chapter is-active" : "heritage-chapter"}
+              className={index === activeIndex ? "heritage-chapter is-active" : "heritage-chapter"}
               data-index={index}
               key={`${moment.year}-${moment.title}`}
               ref={(node) => { items.current[index] = node; }}

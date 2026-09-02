@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { ProgrammeCard } from "@/components/ui/ProgrammeCard";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { programmes } from "@/content/site";
+import { contentRepository } from "@/lib/content";
 
-export const metadata: Metadata = { title: "Programs", description: "Youth development pathways at Viveka Smaraka." };
+export const metadata: Metadata = {
+  title: "Programs",
+  description: "Youth development pathways at Viveka Smaraka.",
+};
 
-export default function ProgramsPage() {
+export default async function ProgramsPage() {
+  const programmes = await contentRepository.getProgrammes();
+
   return (
     <main id="main-content" className="listing-page">
       <section className="listing-hero shell">
