@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { HeroScene } from "@/components/experience/HeroScene";
+import { CampusExplorer } from "@/components/experience/CampusExplorer";
 import { ProgrammeCard } from "@/components/ui/ProgrammeCard";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
-import { facilities, heritageMoments, programmes } from "@/content/site";
+import { heritagePreviewMoments, programmes } from "@/content/site";
 
 export default function Home() {
   return (
@@ -82,19 +83,11 @@ export default function Home() {
           <div className="section-heading section-heading--light">
             <div>
               <SectionLabel>Experience Viveka Smaraka</SectionLabel>
-              <h2>A campus designed for reflection, learning, culture, and public life.</h2>
+              <h2>Move through a campus of learning, reflection, culture, and public life.</h2>
             </div>
-            <p>Phase one uses an abstract spatial language. A verified interactive campus model is planned as the next 3D layer.</p>
+            <p>Select a space to explore its role in the institution. The model is intentionally abstract until verified architectural geometry is available.</p>
           </div>
-          <div className="facility-grid">
-            {facilities.map((facility) => (
-              <article key={facility.index} className="facility-card">
-                <span>{facility.index}</span>
-                <h3>{facility.title}</h3>
-                <p>{facility.description}</p>
-              </article>
-            ))}
-          </div>
+          <CampusExplorer />
         </div>
       </section>
 
@@ -107,8 +100,8 @@ export default function Home() {
           <Link href="/heritage">Enter the heritage story <ArrowIcon /></Link>
         </div>
         <div className="timeline">
-          {heritageMoments.map((moment) => (
-            <article key={moment.year} className="timeline__item">
+          {heritagePreviewMoments.map((moment) => (
+            <article key={`${moment.year}-${moment.title}`} className="timeline__item">
               <div className="timeline__year">{moment.year}</div>
               <div className="timeline__thread" aria-hidden="true"><span /></div>
               <div>

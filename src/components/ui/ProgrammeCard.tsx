@@ -17,7 +17,7 @@ export function ProgrammeCard({ programme }: { programme: Programme }) {
       </div>
       <div className="programme-card__footer">
         <span>{programme.audience}</span>
-        <Link href={`/programs#${programme.slug}`} aria-label={`Explore ${programme.title}`}><ArrowIcon /></Link>
+        <Link href={`/programs/${programme.slug}`} aria-label={`Explore ${programme.title}`}><ArrowIcon /></Link>
       </div>
     </article>
   );
