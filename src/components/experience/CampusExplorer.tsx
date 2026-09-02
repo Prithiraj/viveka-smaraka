@@ -93,8 +93,8 @@ export function CampusExplorer() {
     <div className="campus-explorer">
       <div className="campus-explorer__visual">
         <div className="campus-explorer__coordinates" aria-hidden="true">
-          <span>12.2958° N</span>
-          <span>76.6394° E</span>
+          <span>Mysuru · Karnataka</span>
+          <span>Conceptual spatial study</span>
         </div>
         {reducedMotion ? (
           <StaticCampus selected={selected} />
