@@ -1,0 +1,45 @@
+name: Netlify Anonymous Preview
+
+on:
+  push:
+    branches:
+      - feat/sacred-futurism-foundation
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Deploy anonymously to Netlify
+        run: |
+          npx --yes netlify-cli@latest deploy \
+            --allow-anonymous \
+            --prod \
+            --context production \
+            --json | tee netlify-deploy.json
+          echo "### Netlify anonymous deploy" >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat netlify-deploy.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload deploy metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: netlify-anonymous-deploy
+          path: netlify-deploy.json
+          retention-days: 1
