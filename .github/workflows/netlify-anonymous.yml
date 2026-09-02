@@ -1,9 +1,6 @@
 name: Netlify Anonymous Preview
 
 on:
-  push:
-    branches:
-      - feat/sacred-futurism-foundation
   workflow_dispatch:
 
 permissions:
