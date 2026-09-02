@@ -5,7 +5,7 @@ import { ArrowIcon } from "./ArrowIcon";
 
 export function ProgrammeCard({ programme }: { programme: Programme }) {
   return (
-    <article className="programme-card">
+    <article className="programme-card" id={programme.slug}>
       <div className="programme-card__top">
         <span className="programme-card__eyebrow">{programme.eyebrow}</span>
         <span className="programme-card__status">{statusLabel[programme.status]}</span>

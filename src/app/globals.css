@@ -163,7 +163,10 @@ button, input, textarea, select { font: inherit; }
 .site-footer__grid a, .site-footer__grid span { font-size: 12px; color: var(--muted); }
 .site-footer__base { margin-top: 70px; display: flex; justify-content: space-between; gap: 20px; padding-top: 20px; border-top: 1px solid var(--line); color: #655f54; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; }
 
-.mobile-menu { position: fixed; inset: -17px -15px; min-height: 100vh; background: rgba(13,14,12,.98); z-index: -1; padding: 120px 30px 40px; display: flex; flex-direction: column; justify-content: space-between; }
+.site-header > .brand, .site-header > .header-actions { position: relative; z-index: 2; }
+.menu-button[aria-expanded="true"] span:first-child { top: 20px; transform: rotate(45deg); }
+.menu-button[aria-expanded="true"] span:last-child { top: 20px; transform: rotate(-45deg); }
+.mobile-menu { position: fixed; inset: -17px -15px; min-height: 100vh; background: rgba(13,14,12,.98); z-index: 1; padding: 120px 30px 40px; display: flex; flex-direction: column; justify-content: space-between; }
 .mobile-menu nav { display: grid; }
 .mobile-menu nav a { display: grid; grid-template-columns: 45px 1fr; align-items: center; min-height: 62px; border-bottom: 1px solid var(--line); font-family: var(--display); font-size: 30px; }
 .mobile-menu nav a span { font-family: var(--sans); font-size: 9px; color: var(--warm); }
