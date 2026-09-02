@@ -57,28 +57,32 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         </div>
       </section>
 
-      <section className="event-programme shell" aria-labelledby="event-programme-title">
-        <div className="event-programme__heading">
-          <SectionLabel>Programme record</SectionLabel>
-          <h2 id="event-programme-title">Two days,<br />one opening chapter.</h2>
-        </div>
-        <div className="event-programme__list">
-          {event.programme.map((session, index) => (
-            <article key={`${session.day}-${session.time}-${session.title}`}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <small>{session.day}</small>
-                <strong>{session.time}</strong>
-              </div>
-              <div>
-                <h3>{session.title}</h3>
-                <p>{session.venue}</p>
-                {session.detail && <small>{session.detail}</small>}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      {event.programme.length ? (
+        <section className="event-programme shell" aria-labelledby="event-programme-title">
+          <div className="event-programme__heading">
+            <SectionLabel>{event.status === "completed" ? "Programme record" : "Programme"}</SectionLabel>
+            <h2 id="event-programme-title">
+              {event.status === "completed" ? "The programme, preserved as a record." : "What is planned."}
+            </h2>
+          </div>
+          <div className="event-programme__list">
+            {event.programme.map((session, index) => (
+              <article key={`${session.day}-${session.time}-${session.title}`}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <small>{session.day}</small>
+                  <strong>{session.time}</strong>
+                </div>
+                <div>
+                  <h3>{session.title}</h3>
+                  <p>{session.venue}</p>
+                  {session.detail && <small>{session.detail}</small>}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {event.status !== "completed" ? (
         <InterestPanel
@@ -93,7 +97,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       <section className="event-detail__source">
         <div className="shell">
           <span>Source record</span>
-          <p>This archive entry is based on the inauguration programme and report published on the existing Viveka Smaraka website.</p>
+          <p>This event entry is based on the institutional source linked below when a public source is available.</p>
           {event.sourceUrl ? (
             <a href={event.sourceUrl} target="_blank" rel="noreferrer">
               {event.sourceLabel ?? "View source"} <ArrowIcon />
