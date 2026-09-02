@@ -4,6 +4,7 @@ import "./globals.css";
 import "./phase2.css";
 import "./phase3.css";
 import "./phase4.css";
+import "./phase5.css";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { JsonLd } from "@/components/seo/JsonLd";
