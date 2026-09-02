@@ -60,19 +60,32 @@ export function GlobalSearch({ records }: { records: readonly SearchRecord[] }) 
 
   return (
     <>
-      <button className="search-trigger" type="button" onClick={() => setOpen(true)} aria-label="Search Viveka Smaraka">
+      <button
+        className="search-trigger"
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Search Viveka Smaraka"
+        aria-expanded={open}
+        aria-controls="global-search-dialog"
+      >
         <SearchIcon />
         <span>Search</span>
         <kbd>⌘K</kbd>
       </button>
 
       {open ? (
-        <div className="search-overlay" role="dialog" aria-modal="true" aria-labelledby="search-title">
+        <div
+          id="global-search-dialog"
+          className="search-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="search-title"
+        >
           <button className="search-overlay__backdrop" type="button" aria-label="Close search" onClick={close} />
           <div className="search-palette">
             <div className="search-palette__head">
               <span id="search-title">Search Viveka Smaraka</span>
-              <button type="button" onClick={close}>Esc</button>
+              <button type="button" aria-label="Close search" onClick={close}>Close</button>
             </div>
             <label className="search-palette__input">
               <SearchIcon />
