@@ -1,83 +1,149 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HeroScene } from "@/components/experience/HeroScene";
-import { CampusExplorer } from "@/components/experience/CampusExplorer";
 import { ProgrammeCard } from "@/components/ui/ProgrammeCard";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { contentRepository } from "@/lib/content";
 
 export default async function Home() {
-  const [programmes, facilities, heritagePreviewMoments, events] = await Promise.all([
+  const [programmes, facilities, heritageMoments, events] = await Promise.all([
     contentRepository.getProgrammes(),
     contentRepository.getFacilities(),
-    contentRepository.getHeritagePreviewMoments(),
+    contentRepository.getHeritageMoments(),
     contentRepository.getEvents(),
   ]);
-  const archiveEvent = events.find((event) => event.status === "completed") ?? events[0];
-  const archiveImage = archiveEvent?.media?.[0];
+
+  const openingEvent = events.find((event) => event.status === "completed") ?? events[0];
+  const openingImage = openingEvent?.media?.[0];
+  const swamiMoment = heritageMoments.find((moment) => moment.media?.some((media) => media.aspect === "portrait"));
+  const swamiImage = swamiMoment?.media?.find((media) => media.aspect === "portrait");
+  const restorationMoment = heritageMoments.find((moment) => moment.year === "2012");
+  const restorationBefore = restorationMoment?.media?.[0];
+  const restorationAfter = restorationMoment?.media?.[1];
+
+  const storyCards = [
+    {
+      index: "01",
+      title: "Remember",
+      eyebrow: "Heritage",
+      copy: "Encounter the Mysuru chapter of Swami Vivekananda and the historic Niranjana Matha where the story begins.",
+      image: swamiImage,
+    },
+    {
+      index: "02",
+      title: "Learn",
+      eyebrow: "Formation",
+      copy: "Build attention, character, communication, cultural understanding, and practical confidence for contemporary life.",
+      image: restorationAfter ?? restorationBefore,
+    },
+    {
+      index: "03",
+      title: "Gather",
+      eyebrow: "Public life",
+      copy: "Join a living institution of talks, study, cultural programmes, meditation, service, and shared learning.",
+      image: openingImage,
+    },
+  ];
 
   return (
-    <main id="main-content">
-      <section className="hero">
-        <HeroScene />
-        <div className="hero__grain" aria-hidden="true" />
-        <div className="hero__content shell">
-          <div className="hero__meta">
-            <span>Mysuru</span>
-            <span>1892 → 2026 → Forward</span>
-          </div>
-          <div className="hero__copy">
-            <p className="hero__kicker">Historic place. Contemporary purpose.</p>
+    <main id="main-content" className="light-home">
+      <section className="photo-hero">
+        <div className="shell photo-hero__grid">
+          <div className="photo-hero__copy">
+            <div className="photo-hero__meta">
+              <span>Mysuru</span>
+              <span>1892 → 2026</span>
+            </div>
+            <p className="photo-hero__kicker">Swami Vivekananda Cultural Youth Centre</p>
             <h1>Viveka<br />Smaraka</h1>
-            <p className="hero__lede">Where timeless wisdom meets the aspirations of today&apos;s youth.</p>
-            <div className="hero__actions">
-              <Link className="button button--warm" href="#experience">Explore the experience <ArrowIcon /></Link>
-              <Link className="button button--ghost" href="/visit">Plan your visit</Link>
+            <p className="photo-hero__lede">
+              A historic place where memory becomes learning, character, culture, reflection, and service for a new generation.
+            </p>
+            <div className="photo-hero__actions">
+              <Link className="button button--warm" href="/visit">Plan your visit <ArrowIcon /></Link>
+              <Link className="button button--ghost" href="/heritage">Explore the heritage</Link>
+            </div>
+            <div className="photo-hero__note">
+              <span>Opened 1 August 2026</span>
+              <span>A unit of Sri Ramakrishna Ashrama, Mysuru</span>
             </div>
           </div>
-          <div className="hero__footnote">
-            <span className="pulse-dot" aria-hidden="true" />
-            <span>Inaugurated 1 August 2026</span>
+
+          <div className="photo-hero__visual">
+            {openingImage ? (
+              <figure className="photo-hero__main-image">
+                <Image
+                  src={openingImage.src}
+                  alt={openingImage.alt}
+                  fill
+                  priority
+                  sizes="(max-width: 900px) 100vw, 58vw"
+                />
+                <figcaption>{openingImage.caption ?? "Viveka Smaraka, Mysuru"}</figcaption>
+              </figure>
+            ) : null}
+            {swamiImage ? (
+              <figure className="photo-hero__portrait">
+                <Image
+                  src={swamiImage.src}
+                  alt={swamiImage.alt}
+                  fill
+                  sizes="(max-width: 700px) 30vw, 170px"
+                />
+                <figcaption>1892</figcaption>
+              </figure>
+            ) : null}
           </div>
         </div>
       </section>
 
-      <section className="story-band shell">
+      <section className="editorial-intro shell">
         <SectionLabel>The living memorial</SectionLabel>
-        <div className="story-band__grid">
-          <h2>Not a monument to the past.<br /><em>A centre for the future.</em></h2>
-          <p>Viveka Smaraka transforms a place of historical memory into an active space for character, culture, learning, skill, reflection, and service.</p>
+        <div className="editorial-intro__grid">
+          <h2>A historic place,<br /><em>alive with contemporary purpose.</em></h2>
+          <div>
+            <p>
+              Viveka Smaraka stands on ground associated with Swami Vivekananda&apos;s Mysuru stay in 1892. Today, the place extends that memory into an active cultural youth centre.
+            </p>
+            <Link href="/about">Understand the institution <ArrowIcon /></Link>
+          </div>
         </div>
       </section>
 
-      <section className="pillars shell" aria-labelledby="pillars-title">
-        <div className="pillars__intro">
-          <span id="pillars-title">Three dimensions of growth</span>
-          <p>The experience is organised around a simple human idea: develop the whole person.</p>
+      <section className="story-triptych shell" aria-labelledby="formation-title">
+        <div className="story-triptych__heading">
+          <div>
+            <SectionLabel>Experience the idea</SectionLabel>
+            <h2 id="formation-title">Remember. Learn. Gather.</h2>
+          </div>
+          <p>
+            Swami Vivekananda&apos;s ideal of developing head, heart, and hand is expressed here through knowledge, inner growth, practical skill, and service—not as an abstraction, but as lived experience.
+          </p>
         </div>
-        <div className="pillars__grid">
-          {[
-            ["01", "Head", "Knowledge, concentration, clarity, and critical thought."],
-            ["02", "Heart", "Character, empathy, responsibility, and inner steadiness."],
-            ["03", "Hand", "Skill, service, work culture, and purposeful action."],
-          ].map(([index, title, copy]) => (
-            <article className="pillar" key={title}>
-              <span>{index}</span>
-              <div className={`pillar__orb pillar__orb--${title.toLowerCase()}`} aria-hidden="true" />
-              <h3>{title}</h3>
-              <p>{copy}</p>
+        <div className="story-triptych__grid">
+          {storyCards.map((card) => (
+            <article className="story-photo-card" key={card.title}>
+              <div className="story-photo-card__image">
+                {card.image ? (
+                  <Image src={card.image.src} alt={card.image.alt} fill sizes="(max-width: 760px) 100vw, 33vw" />
+                ) : null}
+              </div>
+              <div className="story-photo-card__body">
+                <div><span>{card.index}</span><small>{card.eyebrow}</small></div>
+                <h3>{card.title}</h3>
+                <p>{card.copy}</p>
+              </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="programmes-section" id="programs">
+      <section className="programmes-section programmes-section--light" id="programs">
         <div className="shell">
           <div className="section-heading">
             <div>
-              <SectionLabel>Find your path</SectionLabel>
-              <h2>Ideas become useful when they become practice.</h2>
+              <SectionLabel>Programs</SectionLabel>
+              <h2>Practical pathways for becoming more capable, centred, and useful.</h2>
             </div>
             <Link href="/programs">Explore all programs <ArrowIcon /></Link>
           </div>
@@ -87,85 +153,117 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="experience-section" id="experience">
-        <div className="experience-section__glow" aria-hidden="true" />
-        <div className="shell experience-section__inner">
-          <div className="section-heading section-heading--light">
-            <div>
-              <SectionLabel>Experience Viveka Smaraka</SectionLabel>
-              <h2>Move through a campus of learning, reflection, culture, and public life.</h2>
+      <section className="facility-editorial" id="experience">
+        <div className="shell facility-editorial__grid">
+          <div className="facility-editorial__visuals">
+            <div className="facility-editorial__caption">
+              <SectionLabel>The place</SectionLabel>
+              <h2>Spaces for memory, stillness, study, and public life.</h2>
             </div>
-            <p>Select a space to explore its role in the institution. The model is intentionally abstract until verified architectural geometry is available.</p>
-          </div>
-          <CampusExplorer facilities={facilities} />
-        </div>
-      </section>
-
-      <section className="heritage-preview shell">
-        <div className="section-heading">
-          <div>
-            <SectionLabel>1892 — a journey through Mysuru</SectionLabel>
-            <h2>One thread. More than a century of movement.</h2>
-          </div>
-          <Link href="/heritage">Enter the heritage story <ArrowIcon /></Link>
-        </div>
-        <div className="timeline">
-          {heritagePreviewMoments.map((moment) => (
-            <article key={`${moment.year}-${moment.title}`} className="timeline__item">
-              <div className="timeline__year">{moment.year}</div>
-              <div className="timeline__thread" aria-hidden="true"><span /></div>
-              <div>
-                <h3>{moment.title}</h3>
-                <p>{moment.description}</p>
+            {restorationBefore && restorationAfter ? (
+              <div className="restoration-pair">
+                <figure>
+                  <Image src={restorationBefore.src} alt={restorationBefore.alt} fill sizes="(max-width: 800px) 100vw, 35vw" />
+                  <figcaption>Before restoration</figcaption>
+                </figure>
+                <figure>
+                  <Image src={restorationAfter.src} alt={restorationAfter.alt} fill sizes="(max-width: 800px) 100vw, 35vw" />
+                  <figcaption>After restoration</figcaption>
+                </figure>
               </div>
-            </article>
-          ))}
+            ) : openingImage ? (
+              <figure className="facility-editorial__single-image">
+                <Image src={openingImage.src} alt={openingImage.alt} fill sizes="(max-width: 800px) 100vw, 55vw" />
+              </figure>
+            ) : null}
+          </div>
+          <div className="facility-editorial__list">
+            {facilities.map((facility) => (
+              <article key={facility.slug}>
+                <span>{facility.index}</span>
+                <div>
+                  <small>{facility.role}</small>
+                  <h3>{facility.title}</h3>
+                  <p>{facility.description}</p>
+                </div>
+              </article>
+            ))}
+            <Link href="/visit#spaces">Explore all spaces <ArrowIcon /></Link>
+          </div>
         </div>
       </section>
 
-      <section className="visit-preview">
+      <section className="heritage-editorial shell">
+        <div className="heritage-editorial__image">
+          {swamiImage ? <Image src={swamiImage.src} alt={swamiImage.alt} fill sizes="(max-width: 780px) 100vw, 34vw" /> : null}
+          <span>Archive · 1892</span>
+        </div>
+        <div className="heritage-editorial__copy">
+          <SectionLabel>Vivekananda in Mysuru</SectionLabel>
+          <h2>One place.<br />A journey that moved outward.</h2>
+          <p>
+            The heritage experience follows the Mysuru chapter through Niranjana Matha, preservation, the building of the contemporary centre, and its opening in 2026.
+          </p>
+          <div className="heritage-editorial__years" aria-label="Selected heritage years">
+            {heritageMoments.filter((moment, index, all) => all.findIndex((item) => item.year === moment.year) === index).map((moment) => (
+              <span key={moment.year}>{moment.year}</span>
+            ))}
+          </div>
+          <Link className="text-link" href="/heritage">Enter the heritage story <ArrowIcon /></Link>
+        </div>
+      </section>
+
+      <section className="visit-preview visit-preview--light">
         <div className="shell visit-preview__grid">
           <div>
             <SectionLabel>Plan your visit</SectionLabel>
-            <h2>Come for the history.<br />Stay for the experience.</h2>
+            <h2>Come for the history.<br />Make time for the place.</h2>
           </div>
           <div className="visit-panel">
-            <span className="visit-panel__eyebrow">Visitor information</span>
-            <p>The institution is on Narayana Shastri Road in Mysuru. Daily public timings and admission details are still awaiting verified publication; the visitor guide separates confirmed facts from pending information.</p>
+            <span className="visit-panel__eyebrow">Narayana Shastri Road · Mysuru</span>
+            <p>
+              The visitor guide separates confirmed location and contact information from operating details that are still awaiting formal publication.
+            </p>
             <div className="visit-panel__actions">
               <Link className="button button--dark" href="/visit">Visitor guide <ArrowIcon /></Link>
-              <span>Mysuru · Karnataka</span>
+              <span>Verified information first</span>
             </div>
           </div>
         </div>
       </section>
 
-      {archiveEvent ? (
-        <section className="events-preview shell">
-          <SectionLabel>From the archive</SectionLabel>
-          <div className="home-archive-event">
-            {archiveImage ? (
-              <div className="home-archive-event__media">
-                <Image src={archiveImage.src} alt={archiveImage.alt} fill sizes="(max-width: 900px) 100vw, 52vw" />
-                <span aria-hidden="true" />
+      {openingEvent ? (
+        <section className="archive-editorial shell">
+          <div className="section-heading">
+            <div>
+              <SectionLabel>Institutional archive</SectionLabel>
+              <h2>The opening of a new chapter.</h2>
+            </div>
+            <Link href="/events">View the event archive <ArrowIcon /></Link>
+          </div>
+          <div className="archive-editorial__card">
+            {openingImage ? (
+              <div className="archive-editorial__media">
+                <Image src={openingImage.src} alt={openingImage.alt} fill sizes="(max-width: 850px) 100vw, 58vw" />
               </div>
             ) : null}
-            <div className="home-archive-event__copy">
-              <span>{archiveEvent.displayDate}</span>
-              <h2>{archiveEvent.title}</h2>
-              <p>{archiveEvent.summary}</p>
-              <Link href={`/events/${archiveEvent.slug}`}>Enter the opening archive <ArrowIcon /></Link>
+            <div className="archive-editorial__body">
+              <span>{openingEvent.displayDate}</span>
+              <h3>{openingEvent.title}</h3>
+              <p>{openingEvent.summary}</p>
+              <Link href={`/events/${openingEvent.slug}`}>Read the archive record <ArrowIcon /></Link>
             </div>
           </div>
         </section>
       ) : null}
 
-      <section className="support-preview">
-        <div className="support-preview__orb" aria-hidden="true" />
+      <section className="support-preview support-preview--light">
         <div className="shell support-preview__inner">
-          <SectionLabel>Carry the idea forward</SectionLabel>
-          <h2>Support the next generation,<br />not just the next building.</h2>
-          <p>Future support pathways will connect donors and partners directly with youth programmes, education, heritage conservation, the library, and scholarships.</p>
+          <SectionLabel>Carry the work forward</SectionLabel>
+          <h2>Support learning, culture,<br />heritage, and young people.</h2>
+          <p>
+            Support should now be connected to the institution&apos;s living work—youth programmes, study, education, heritage conservation, library resources, and scholarships.
+          </p>
           <Link className="button button--warm" href="/support">Explore ways to support <ArrowIcon /></Link>
         </div>
       </section>
