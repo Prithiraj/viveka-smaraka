@@ -26,20 +26,20 @@ jobs:
 
       - name: Deploy anonymously to Netlify
         run: |
+          set -o pipefail
           npx --yes netlify-cli@latest deploy \
             --allow-anonymous \
             --prod \
-            --context production \
-            --json | tee netlify-deploy.json
+            --context production 2>&1 | tee netlify-deploy.log
           echo "### Netlify anonymous deploy" >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
-          echo '```json' >> "$GITHUB_STEP_SUMMARY"
-          cat netlify-deploy.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          cat netlify-deploy.log >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload deploy metadata
         uses: actions/upload-artifact@v4
         with:
           name: netlify-anonymous-deploy
-          path: netlify-deploy.json
+          path: netlify-deploy.log
           retention-days: 1
