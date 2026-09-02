@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { primaryNav } from "@/content/site";
+import { GlobalSearch } from "./GlobalSearch";
+import { LanguageControl } from "./LanguageControl";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -33,9 +35,8 @@ export function SiteHeader() {
       </nav>
 
       <div className="header-actions">
-        <span className="language-pill" title="Kannada content is planned for the bilingual release" aria-label="English selected; Kannada content planned">
-          EN <span aria-hidden="true">/</span> ಕನ್ನಡ
-        </span>
+        <GlobalSearch />
+        <LanguageControl />
         <Link className="button button--small button--warm desktop-support" href="/support">
           Support
         </Link>

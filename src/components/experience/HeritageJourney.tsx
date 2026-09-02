@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
+import { ArchiveMedia } from "@/components/ui/ArchiveMedia";
 import { heritageMoments } from "@/content/site";
 
 function useReducedMotion() {
@@ -90,6 +91,7 @@ export function HeritageJourney() {
               <h2>{moment.title}</h2>
               <p className="heritage-chapter__lead">{moment.description}</p>
               {moment.detail && <p className="heritage-chapter__detail">{moment.detail}</p>}
+              {moment.media?.length ? <ArchiveMedia media={moment.media} className="heritage-chapter__media" /> : null}
               <div className="heritage-chapter__signal" aria-hidden="true">
                 <span>{String(index + 1).padStart(2, "0")}</span>
               </div>

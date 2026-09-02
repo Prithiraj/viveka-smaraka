@@ -1,12 +1,17 @@
+import Image from "next/image";
 import Link from "next/link";
 import { HeroScene } from "@/components/experience/HeroScene";
 import { CampusExplorer } from "@/components/experience/CampusExplorer";
 import { ProgrammeCard } from "@/components/ui/ProgrammeCard";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
+import { events } from "@/content/events";
 import { heritagePreviewMoments, programmes } from "@/content/site";
 
 export default function Home() {
+  const archiveEvent = events[0];
+  const archiveImage = archiveEvent.media?.[0];
+
   return (
     <main id="main-content">
       <section className="hero">
@@ -121,7 +126,7 @@ export default function Home() {
           </div>
           <div className="visit-panel">
             <span className="visit-panel__eyebrow">Visitor information</span>
-            <p>Public timings and detailed visitor policies are being verified for publication. Please confirm current information with the centre before travelling.</p>
+            <p>The institution is on Narayana Shastri Road in Mysuru. Daily public timings and admission details are still awaiting verified publication; the visitor guide separates confirmed facts from pending information.</p>
             <div className="visit-panel__actions">
               <Link className="button button--dark" href="/visit">Visitor guide <ArrowIcon /></Link>
               <span>Mysuru · Karnataka</span>
@@ -131,15 +136,19 @@ export default function Home() {
       </section>
 
       <section className="events-preview shell">
-        <SectionLabel>Events</SectionLabel>
-        <div className="events-preview__card">
-          <div>
-            <span>Programming calendar</span>
-            <h2>A stage for ideas, culture, and youth.</h2>
-          </div>
-          <div>
-            <p>The public events calendar will surface talks, workshops, cultural programmes, and gatherings here once the institutional schedule is connected.</p>
-            <Link href="/events">Explore events <ArrowIcon /></Link>
+        <SectionLabel>From the archive</SectionLabel>
+        <div className="home-archive-event">
+          {archiveImage ? (
+            <div className="home-archive-event__media">
+              <Image src={archiveImage.src} alt={archiveImage.alt} fill sizes="(max-width: 900px) 100vw, 52vw" />
+              <span aria-hidden="true" />
+            </div>
+          ) : null}
+          <div className="home-archive-event__copy">
+            <span>{archiveEvent.displayDate}</span>
+            <h2>{archiveEvent.title}</h2>
+            <p>{archiveEvent.summary}</p>
+            <Link href={`/events/${archiveEvent.slug}`}>Enter the opening archive <ArrowIcon /></Link>
           </div>
         </div>
       </section>

@@ -1,12 +1,58 @@
 import type { Metadata } from "next";
-import { EditorialPage } from "@/components/ui/EditorialPage";
+import { EventCard } from "@/components/ui/EventCard";
+import { SectionLabel } from "@/components/ui/SectionLabel";
+import { events } from "@/content/events";
 
-export const metadata: Metadata = { title: "Events", description: "Upcoming talks, workshops, cultural programmes, and gatherings at Viveka Smaraka." };
+export const metadata: Metadata = {
+  title: "Events",
+  description: "Upcoming programmes and the growing public archive of Viveka Smaraka events in Mysuru.",
+};
 
 export default function EventsPage() {
-  return <EditorialPage eyebrow="Events" title="A stage for ideas, culture, and youth." intro="The events experience is ready for a verified institutional calendar. It will distinguish upcoming, current, and archived events without leaving expired information in primary journeys." sections={[
-    { title: "Upcoming", body: "Featured events will lead with date, time, language, venue, speaker or facilitator, capacity, and one clear registration state." },
-    { title: "Calendar", body: "A calendar view is planned once event data is connected, with useful filtering rather than a decorative month grid." },
-    { title: "Archive", body: "Past events become a permanent institutional record with photography, summaries, speakers, and related programmes where available." },
-  ]} cta={{ label: "Plan a visit", href: "/visit" }} />;
+  const upcoming = events.filter((event) => event.status === "upcoming" || event.status === "ongoing");
+  const archive = events.filter((event) => event.status === "completed");
+
+  return (
+    <main id="main-content" className="events-page">
+      <section className="listing-hero shell">
+        <SectionLabel>Events</SectionLabel>
+        <h1>A stage for ideas,<br /><em>culture, and youth.</em></h1>
+        <p>The event system now distinguishes verified live programming from the institutional archive. Nothing is promoted as upcoming until a date is confirmed by the centre.</p>
+      </section>
+
+      <section className="event-status shell" aria-labelledby="upcoming-events-title">
+        <div className="event-status__head">
+          <span>01</span>
+          <div>
+            <p>Current calendar</p>
+            <h2 id="upcoming-events-title">Upcoming</h2>
+          </div>
+        </div>
+        {upcoming.length ? (
+          <div className="event-list">
+            {upcoming.map((event) => <EventCard event={event} key={event.slug} />)}
+          </div>
+        ) : (
+          <div className="event-empty">
+            <span>Calendar status</span>
+            <strong>No future event has been published into this application yet.</strong>
+            <p>When the institutional calendar is connected, confirmed talks, workshops, cultural programmes, and gatherings will appear here automatically.</p>
+          </div>
+        )}
+      </section>
+
+      <section className="event-archive shell" aria-labelledby="event-archive-title">
+        <div className="event-status__head">
+          <span>02</span>
+          <div>
+            <p>Institutional memory</p>
+            <h2 id="event-archive-title">Archive</h2>
+          </div>
+        </div>
+        <div className="event-list">
+          {archive.map((event) => <EventCard event={event} key={event.slug} />)}
+        </div>
+      </section>
+    </main>
+  );
 }

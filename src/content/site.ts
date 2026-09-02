@@ -144,6 +144,16 @@ export const heritageMoments: HeritageMoment[] = [
       "Swami Vivekananda's Mysuru stay connected him with the city, its leadership, and a decisive phase of his journey.",
     detail:
       "The digital experience treats Mysuru not as a footnote, but as a place where conversations, support, and resolve gathered around a young monk whose message would soon travel much farther.",
+    media: [
+      {
+        src: "https://vivekasmaraka.org/wp-content/uploads/2026/06/SV-standing-with-danda-482x1024.png",
+        alt: "Historic archival portrait used by Viveka Smaraka for the 1892 journey chapter.",
+        caption: "An archival portrait from the existing Viveka Smaraka history collection.",
+        credit: "Viveka Smaraka archive",
+        sourceUrl: "https://vivekasmaraka.org/history/",
+        aspect: "portrait",
+      },
+    ],
   },
   {
     year: "1892",
@@ -188,6 +198,24 @@ export const heritageMoments: HeritageMoment[] = [
       "Restoration and conservation work helped prepare the historic site for a larger public and educational future.",
     detail:
       "Preservation here is not presented as freezing a building in time. It creates the conditions for the place to carry meaning forward.",
+    media: [
+      {
+        src: "https://vivekasmaraka.org/wp-content/uploads/2026/06/VS-Before-renovation-300x102.jpg",
+        alt: "Historic Viveka Smaraka site before restoration.",
+        caption: "Before restoration.",
+        credit: "Viveka Smaraka archive",
+        sourceUrl: "https://vivekasmaraka.org/history/",
+        aspect: "panorama",
+      },
+      {
+        src: "https://vivekasmaraka.org/wp-content/uploads/2026/06/VS-After-renovation-300x98.jpg",
+        alt: "Historic Viveka Smaraka site after restoration.",
+        caption: "After restoration.",
+        credit: "Viveka Smaraka archive",
+        sourceUrl: "https://vivekasmaraka.org/history/",
+        aspect: "panorama",
+      },
+    ],
   },
   {
     year: "2022",
@@ -210,6 +238,17 @@ export const heritageMoments: HeritageMoment[] = [
       "Viveka Smaraka enters its next chapter as an active centre for youth, culture, learning, reflection, and service.",
     detail:
       "The inauguration is deliberately treated as a beginning rather than an ending: the meaning of the centre will now be shaped by the people, programmes, and public life it supports.",
+    media: [
+      {
+        src: "https://vivekasmaraka.org/wp-content/uploads/2026/08/1-at-SVCYC-VivekaSmaraka-11-1024x952.jpg",
+        alt: "Opening ceremony at Viveka Smaraka in August 2026.",
+        caption: "Opening day, 1 August 2026.",
+        credit: "Viveka Smaraka archive",
+        sourceUrl:
+          "https://vivekasmaraka.org/viveka-smaraka-inaugurated-by-pm-narendra-modi-in-presence-of-swami-gautamanandaji-1-aug-2026/",
+        aspect: "square",
+      },
+    ],
   },
 ];
 
